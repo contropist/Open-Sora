@@ -1,18 +1,19 @@
-num_frames = 64
-frame_interval = 2
-image_size = (512, 512)
-
 # Define dataset
-root = None
-data_path = "CSV_PATH"
-use_image_transform = False
-num_workers = 4
+dataset = dict(
+    type="VideoTextDataset",
+    data_path=None,
+    num_frames=64,
+    frame_interval=3,
+    image_size=(256, 256),
+)
 
 # Define acceleration
+num_workers = 4
 dtype = "bf16"
 grad_checkpoint = True
 plugin = "zero2"
 sp_size = 1
+
 
 # Define model
 model = dict(
@@ -20,7 +21,7 @@ model = dict(
     space_scale=1.0,
     time_scale=2 / 3,
     from_pretrained=None,
-    enable_flashattn=True,
+    enable_flash_attn=True,
     enable_layernorm_kernel=True,
 )
 vae = dict(

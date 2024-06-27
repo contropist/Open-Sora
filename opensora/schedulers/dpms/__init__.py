@@ -8,7 +8,7 @@ from .dpm_solver import DPMS
 
 
 @SCHEDULERS.register_module("dpm-solver")
-class DMP_SOLVER:
+class DPM_SOLVER:
     def __init__(self, num_sampling_steps=None, cfg_scale=4.0):
         self.num_sampling_steps = num_sampling_steps
         self.cfg_scale = cfg_scale
@@ -17,13 +17,15 @@ class DMP_SOLVER:
         self,
         model,
         text_encoder,
-        z_size,
+        z,
         prompts,
         device,
         additional_args=None,
+        mask=None,
+        progress=True,
     ):
+        assert mask is None, "mask is not supported in dpm-solver"
         n = len(prompts)
-        z = torch.randn(n, *z_size, device=device)
         model_args = text_encoder.encode(prompts)
         y = model_args.pop("y")
         null_y = text_encoder.null(n)
@@ -37,7 +39,14 @@ class DMP_SOLVER:
             cfg_scale=self.cfg_scale,
             model_kwargs=model_args,
         )
-        samples = dpms.sample(z, steps=self.num_sampling_steps, order=2, skip_type="time_uniform", method="multistep")
+        samples = dpms.sample(
+            z,
+            steps=self.num_sampling_steps,
+            order=2,
+            skip_type="time_uniform",
+            method="multistep",
+            progress=progress,
+        )
         return samples
 
 

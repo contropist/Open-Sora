@@ -18,14 +18,14 @@ def run_attention(rank, world_size):
     torch.manual_seed(1024)
     set_sequence_parallel_group(dist.group.WORLD)
 
-    seq_parallel_attention = SeqParallelAttention(dim=256, num_heads=4, qkv_bias=True, enable_flashattn=False).cuda()
+    seq_parallel_attention = SeqParallelAttention(dim=256, num_heads=4, qkv_bias=True, enable_flash_attn=False).cuda()
 
     torch.manual_seed(1024)
     attention = Attention(
         dim=256,
         num_heads=4,
         qkv_bias=True,
-        enable_flashattn=False,
+        enable_flash_attn=False,
     ).cuda()
 
     # create inputs
@@ -69,16 +69,24 @@ def run_cross_attention(rank, world_size):
     # create model
     torch.manual_seed(1024)
     set_sequence_parallel_group(dist.group.WORLD)
-    seq_parallel_attention = SeqParallelMultiHeadCrossAttention(
-        d_model=256,
-        num_heads=4,
-    ).cuda().to(torch.bfloat16)
+    seq_parallel_attention = (
+        SeqParallelMultiHeadCrossAttention(
+            d_model=256,
+            num_heads=4,
+        )
+        .cuda()
+        .to(torch.bfloat16)
+    )
 
     torch.manual_seed(1024)
-    attention = MultiHeadCrossAttention(
-        d_model=256,
-        num_heads=4,
-    ).cuda().to(torch.bfloat16)
+    attention = (
+        MultiHeadCrossAttention(
+            d_model=256,
+            num_heads=4,
+        )
+        .cuda()
+        .to(torch.bfloat16)
+    )
 
     # make sure the weights are the same
     for p1, p2 in zip(seq_parallel_attention.parameters(), attention.parameters()):
@@ -128,7 +136,9 @@ def run_cross_attention(rank, world_size):
 
     # # check grad
     for p1, p2 in zip(seq_parallel_attention.named_parameters(), attention.named_parameters()):
-        assert torch.allclose(p1[1].grad, p2[1].grad, rtol=1e-3, atol=1e-4), f"\n{p1[0]}\nvs\n{p2[0]}:\n{p1[1].grad}\nvs\n{p2[1].grad}"
+        assert torch.allclose(
+            p1[1].grad, p2[1].grad, rtol=1e-3, atol=1e-4
+        ), f"\n{p1[0]}\nvs\n{p2[0]}:\n{p1[1].grad}\nvs\n{p2[1].grad}"
 
     # # check input grad
     assert torch.allclose(x.grad, seq_x.grad, atol=1e-7), f"{x.grad}\nvs\n{seq_x.grad}"

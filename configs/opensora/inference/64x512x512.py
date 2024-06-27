@@ -7,7 +7,7 @@ model = dict(
     type="STDiT-XL/2",
     space_scale=1.0,
     time_scale=2 / 3,
-    enable_flashattn=True,
+    enable_flash_attn=True,
     enable_layernorm_kernel=True,
     from_pretrained="PRETRAINED_MODEL",
 )
@@ -26,10 +26,10 @@ scheduler = dict(
     num_sampling_steps=100,
     cfg_scale=7.0,
 )
-dtype = "fp16"
+dtype = "bf16"
 
 # Others
 batch_size = 1
 seed = 42
 prompt_path = "./assets/texts/t2v_samples.txt"
-save_dir = "./outputs/samples/"
+save_dir = "./samples/samples/"

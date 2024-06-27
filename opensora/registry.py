@@ -15,6 +15,8 @@ def build_module(module, builder, **kwargs):
     Returns:
         Any: The built module.
     """
+    if module is None:
+        return None
     if isinstance(module, dict):
         cfg = deepcopy(module)
         for k, v in kwargs.items():
@@ -36,4 +38,9 @@ MODELS = Registry(
 SCHEDULERS = Registry(
     "scheduler",
     locations=["opensora.schedulers"],
+)
+
+DATASETS = Registry(
+    "dataset",
+    locations=["opensora.datasets"],
 )

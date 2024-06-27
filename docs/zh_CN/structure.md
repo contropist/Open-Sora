@@ -1,6 +1,6 @@
-# Repo & Config Structure
+# 代码仓库和配置文件结构
 
-## Repo Structure
+## 代码仓库结构
 
 ```plaintext
 Open-Sora
@@ -38,9 +38,10 @@ Open-Sora
 └── tools                          -> Tools for data processing and more
 ```
 
-## Configs
+## 配置文件结构
 
-Our config files follows [MMEgine](https://github.com/open-mmlab/mmengine). MMEngine will reads the config file (a `.py` file) and parse it into a dictionary-like object.
+
+我们的配置文件遵循[MMEgine](https://github.com/open-mmlab/mmengine)。 MMEngine 将读取配置文件（“.py”文件）并将其解析为类似字典的对象。
 
 ```plaintext
 Open-Sora
@@ -66,16 +67,16 @@ Open-Sora
     └── pixart                     -> PixArt related configs
 ```
 
-## Inference config demos
+## 推理配置演示
 
-To change the inference settings, you can directly modify the corresponding config file. Or you can pass arguments to overwrite the config file ([config_utils.py](/opensora/utils/config_utils.py)). To change sampling prompts, you should modify the `.txt` file passed to the `--prompt_path` argument.
+要更改推理设置，可以直接修改相应的配置文件。或者您可以传递参数来覆盖配置文件（[config_utils.py](/opensora/utils/config_utils.py)）。要更改采样提示，您应该修改传递给“--prompt_path”参数的“.txt”文件。
 
 ```plaintext
 --prompt_path ./assets/texts/t2v_samples.txt  -> prompt_path
 --ckpt-path ./path/to/your/ckpt.pth           -> model["from_pretrained"]
 ```
 
-The explanation of each field is provided below.
+下面提供了每个字段的解释。
 
 ```python
 # Define sampling size
@@ -88,7 +89,7 @@ model = dict(
     type="STDiT-XL/2",        # Select model type (STDiT-XL/2, DiT-XL/2, etc.)
     space_scale=1.0,          # (Optional) Space positional encoding scale (new height / old height)
     time_scale=2 / 3,         # (Optional) Time positional encoding scale (new frame_interval / old frame_interval)
-    enable_flashattn=True,    # (Optional) Speed up training and inference with flash attention
+    enable_flash_attn=True,    # (Optional) Speed up training and inference with flash attention
     enable_layernorm_kernel=True, # (Optional) Speed up training and inference with fused kernel
     from_pretrained="PRETRAINED_MODEL",  # (Optional) Load from pretrained model
     no_temporal_pos_emb=True,  # (Optional) Disable temporal positional encoding (for image)
@@ -117,7 +118,7 @@ prompt_path = "./assets/texts/t2v_samples.txt"  # path to prompt file
 save_dir = "./samples"         # path to save samples
 ```
 
-## Training config demos
+## 训练配置演示
 
 ```python
 # Define sampling size
@@ -143,7 +144,7 @@ model = dict(
     space_scale=1.0,
     time_scale=2 / 3,
     from_pretrained="YOUR_PRETRAINED_MODEL",
-    enable_flashattn=True,        # Enable flash attention
+    enable_flash_attn=True,        # Enable flash attention
     enable_layernorm_kernel=True, # Enable layernorm kernel
 )
 vae = dict(
